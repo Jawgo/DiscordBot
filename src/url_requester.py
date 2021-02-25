@@ -20,7 +20,10 @@ def check_avail():
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36")
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
     driver.get(walmart_in_stock)
-    print(driver.page_source)
+    
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    tag = soup.body.select_one('section.prod-ProductCTA.primaryProductCTA-marker button')
+    print(tag)
     driver.quit()
 
     # captcha = False
