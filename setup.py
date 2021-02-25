@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    install_requires=['requests', 'discord', 'bs4'],
+    install_requires=['requests', 'discord', 'bs4', 'simplejson' ],
 
     classifiers=[
         'Natural Language :: English',
