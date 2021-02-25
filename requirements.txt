@@ -3,3 +3,4 @@ discord
 bs4
 simplejson
 selenium
+lxml
