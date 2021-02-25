@@ -6,13 +6,10 @@ import simplejson
 import discord
 import os
 
-class DiscordBot(object):
-    self._client
-
+class DiscordBot():
     def __init__(self, token):
-        self._token = token
         self._client = discord.Client()
-        self._client.run(self._token)
+        self._client.run(token)
 
 
     @self._client.event
@@ -26,6 +23,9 @@ class DiscordBot(object):
 
         if message.content.startswith('$hello'):
             await message.channel.send('Hello {}!'.format(message.author))
+
+if __name__ == '__main__':
+    client = DiscordBot(os.environ["TOKEN"])
 
 
 # print("Thrusters Activated")
