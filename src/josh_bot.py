@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 import simplejson
 import discord
 
+import url_requester
+
 class DiscordBot(discord.Client):
       
     async def on_ready(self):
@@ -33,3 +35,4 @@ if __name__ == '__main__':
     print("Starting things up")
     client = DiscordBot()
     client.run(os.environ["TOKEN"])
+    url_requester.check_avail()

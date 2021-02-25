@@ -1,9 +1,9 @@
 FROM python:latest
 
 # Install app
-ADD . /usr/src/ff_bot
-WORKDIR /usr/src/ff_bot
+ADD . /usr/src/src
+WORKDIR /usr/src/src
 RUN python3 setup.py install
 
 # Launch app
-CMD ["python3", "ff_bot/ff_bot.py"]
+CMD ["python3", "src/josh_bot.py"]
