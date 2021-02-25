@@ -15,9 +15,12 @@ class DiscordBot(discord.Client):
     def start(self):
         self._client.run(self._token)
 
+
+    @client.event
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self._client))
 
+    @client.event
     async def on_message(self, message):
         if message.author == self._client.user:
             return
@@ -26,6 +29,7 @@ class DiscordBot(discord.Client):
             await message.channel.send('Hello {}!'.format(message.author))
 
 if __name__ == '__main__':
+    print("Starting things up")
     client = DiscordBot(os.environ["TOKEN"])
     client.start()
 
