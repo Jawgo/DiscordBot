@@ -1,0 +1,16 @@
+{
+    "name": "Web Scrapper Discord Bot",
+    "description": "Checks the availability of certian items stock",
+    "keywords": [
+      "discord",
+      "chat bot"
+    ],
+    "website": "https://github.com/Jawgo/DiscordBot",
+    "repository": "https://github.com/Jawgo/DiscordBot",
+    "env": {
+      "TOKEN": {
+        "description": "Token for Discord Bot",
+        "value": "secret"
+      }
+    }
+  }

@@ -1,0 +1,1 @@
+worker: python3 src/josh_bot.py
