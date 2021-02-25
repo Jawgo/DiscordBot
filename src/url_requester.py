@@ -5,6 +5,7 @@ import simplejson
 import re
 from selenium import webdriver
 import os
+from time import sleep
 
 tsc_url = "https://www.tsc.ca/pages/productdetails?nav=R:643762"
 test_good = "https://www.tsc.ca/pages/productdetails?nav=R:646265&source=igodigital"
@@ -17,29 +18,26 @@ def check_avail():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-gpu")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36")
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-    driver.get(walmart_in_stock)
-    
-    soup = BeautifulSoup(driver.page_source, 'lxml')
-    tag = soup.body.select_one('section.prod-ProductCTA.primaryProductCTA-marker button')
-    print(tag)
-    driver.quit()
+    # driver = webdriver.Chrome(executable_path="C:\\Users\\Josh\\Downloads\\chromedriver", options=chrome_options)
 
-    # captcha = False
-    # user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
-    # headers = {'user-agent': user_agent, 'referrer': 'https://google.com'}
-    # url = walmart_in_stock
-    # response = requests.get(url, headers=headers)
-    # soup = BeautifulSoup(response.text, 'html.parser')
-    # a = soup.find('span', {"id":"lblSoldOut"})
-    # return a
-    # a = soup.find('p',{"class":"css-k008qs e9yijxp1"})
+    driver.get(walmart_test)
+
+    innerHTML = driver.execute_script("return document.body.innerHTML")
+    # sleep(1)
+    soup = BeautifulSoup(innerHTML, 'lxml')
     # print(soup)
-    # a = soup.find_all(string="Out of stock")
-
-    # print(strings)
+    # tag = soup.body.select_one('class=cta')
+    tag = soup.find('button',{"data-automation":"cta-button"})
+    print(tag)
+    if 'add to cart' in str(tag).lower():
+        print('IN STOCK')
+    else:
+        print("NOT IN STOCK")
+    driver.quit()
     
     
      ####################
@@ -89,30 +87,4 @@ def check_avail():
 
 if __name__ == '__main__':
     check_avail()
-    # test, test1 = check_avail()
-    # print(test)
-    # print(test1)
-  
-
-
-
-# print("Thrusters Activated")
-
-# tsc_url_test = "https://www.tsc.ca/pages/productdetails?nav=R:646265&source=igodigital"
-
-# response = requests.get(tsc_url)
-
-# <div id="soldoutContainer" class="soldout-container-itemlevel hidden-xs">
-#                   <span id="lblSoldOut" class="soldOut soldOutProduct">SOLD OUT</span>
-#                </div>
-
-
-# soup = BeautifulSoup(response.text, 'html.parser')
-# a = soup.find('span', {"id":"lblSoldOut"})
-# print(a)
-
-# response2 = requests.get(tsc_url_test)
-# soup2 = BeautifulSoup(response2.text, 'html.parser')
-# b = soup2.find('span', {"id":"lblSoldOut"})
-# print(b)
 
