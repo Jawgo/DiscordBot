@@ -6,7 +6,7 @@ import simplejson
 import discord
 import os
 
-class DiscordBot(object):
+class DiscordBot(discord.Client):
 
     def __init__(self, token):
         self._client = discord.Client()
