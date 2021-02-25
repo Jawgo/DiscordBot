@@ -33,6 +33,6 @@ class DiscordBot(discord.Client):
 
 if __name__ == '__main__':
     print("Starting things up")
+    url_requester.check_avail()
     client = DiscordBot()
     client.run(os.environ["TOKEN"])
-    url_requester.check_avail()

@@ -20,6 +20,7 @@ def check_avail():
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
     driver.get(walmart_in_stock)
     print(driver.page_source)
+    driver.quit()
 
     # captcha = False
     # user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
