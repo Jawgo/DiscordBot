@@ -1,46 +1,35 @@
+import re
+import os
+import urllib
+import asyncio
+
 import requests
 from bs4 import BeautifulSoup
-import urllib
-import re
 import simplejson
 import discord
-import os
 
 class DiscordBot(discord.Client):
       
     async def on_ready(self):
-        print('We have logged in as {0.user}'.format(client))
+        print('We have logged in as {0.user}'.format(self))
 
     async def on_message(self, message):
-        if message.author == client.user:
+        if message.author == self.user:
             return
 
         if message.content.startswith('$hello'):
-            await message.channel.send('Hello {}!'.format(message.author))
+            await message.channel.send('Hello {}!'.format(message.author.display_name))
+        
+        
+    # async def search_for_ps5(self):
+    #     await self.wait_until_ready()
+
+    #     while not self.is_closed():
+
+    #         await asyncio.sleep(60) 
+            
 
 if __name__ == '__main__':
     print("Starting things up")
     client = DiscordBot()
     client.run(os.environ["TOKEN"])
-
-
-# print("Thrusters Activated")
-# tsc_url = "https://www.tsc.ca/pages/productdetails?nav=R:643762"
-# tsc_url_test = "https://www.tsc.ca/pages/productdetails?nav=R:646265&source=igodigital"
-
-# response = requests.get(tsc_url)
-
-# <div id="soldoutContainer" class="soldout-container-itemlevel hidden-xs">
-#                   <span id="lblSoldOut" class="soldOut soldOutProduct">SOLD OUT</span>
-#                </div>
-
-
-# soup = BeautifulSoup(response.text, 'html.parser')
-# a = soup.find('span', {"id":"lblSoldOut"})
-# print(a)
-
-# response2 = requests.get(tsc_url_test)
-# soup2 = BeautifulSoup(response2.text, 'html.parser')
-# b = soup2.find('span', {"id":"lblSoldOut"})
-# print(b)
-
