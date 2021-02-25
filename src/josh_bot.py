@@ -7,22 +7,12 @@ import discord
 import os
 
 class DiscordBot(discord.Client):
-
-    def __init__(self, token):
-        self._client = discord.Client()
-        self._token = token
-
-    def start(self):
-        self._client.run(self._token)
-
-
-    @client.event
+      
     async def on_ready(self):
-        print('We have logged in as {0.user}'.format(self._client))
+        print('We have logged in as {0.user}'.format(client))
 
-    @client.event
     async def on_message(self, message):
-        if message.author == self._client.user:
+        if message.author == client.user:
             return
 
         if message.content.startswith('$hello'):
@@ -30,8 +20,8 @@ class DiscordBot(discord.Client):
 
 if __name__ == '__main__':
     print("Starting things up")
-    client = DiscordBot(os.environ["TOKEN"])
-    client.start()
+    client = DiscordBot()
+    client.run(os.environ["TOKEN"])
 
 
 # print("Thrusters Activated")
