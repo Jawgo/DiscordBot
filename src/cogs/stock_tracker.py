@@ -32,6 +32,9 @@ class StockTracker(commands.Cog):
             channel = self.client.get_channel(797324359051116556)
             self.in_stock = True
             await channel.send("In STOCK {}".format(scrape_result.url))
+        elif not result and self.in_stock:
+            await channel.send("Out of Stock {}".format(scrape_result.url))
+
     
 
 
