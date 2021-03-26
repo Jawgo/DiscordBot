@@ -6,7 +6,6 @@ from discord.ext import commands
 # class DiscordBot(discord.Client):
 class DiscordBot(commands.Bot):
 
-    @client.event()
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self))
         await self.change_presence(status=discord.Status.online, activity=discord.Game('Hunt for Things'))
