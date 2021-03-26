@@ -1,38 +1,26 @@
-import re
 import os
-import urllib
 import asyncio
-
-import requests
-from bs4 import BeautifulSoup
-import simplejson
 import discord
+from discord.ext import commands
 
-import url_requester
+# class DiscordBot(discord.Client):
+class DiscordBot(commands.Bot):
 
-class DiscordBot(discord.Client):
-      
+    @client.event()
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self))
+        await self.change_presence(status=discord.Status.online, activity=discord.Game('Hunt for Things'))
 
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
+    @commands.command()
+    async def hello(self, ctx):
+        await ctx.channel.send('Hello {}!'.format(ctx.message.author.display_name))
 
-        if message.content.startswith('$hello'):
-            await message.channel.send('Hello {}!'.format(message.author.display_name))
-        
-        
-    # async def search_for_ps5(self):
-    #     await self.wait_until_ready()
-
-    #     while not self.is_closed():
-
-    #         await asyncio.sleep(60) 
+    
             
 
 if __name__ == '__main__':
     print("Starting things up")
-    url_requester.check_avail()
-    client = DiscordBot()
+    intents = discord.Intents.default()
+    client = DiscordBot(command_prefix="!", intents=intents)
+    client.load_extension('cogs.stock_tracker')
     client.run(os.environ["TOKEN"])

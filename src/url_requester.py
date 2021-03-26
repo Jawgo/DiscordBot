@@ -11,6 +11,9 @@ tsc_url = "https://www.tsc.ca/pages/productdetails?nav=R:643762"
 test_good = "https://www.tsc.ca/pages/productdetails?nav=R:646265&source=igodigital"
 walmart_test = "https://www.walmart.ca/en/ip/playstation5-digital-edition/6000202198823"
 walmart_in_stock = "https://www.walmart.ca/en/ip/call-of-duty-black-ops-cold-war-ps5/6000201790899"
+
+amd_5950_bb = "https://www.bestbuy.ca/en-ca/product/amd-ryzen-9-5950x-16-core-3-4ghz-am4-desktop-processor/15331716"
+bb_good = "https://www.bestbuy.ca/en-ca/product/amd-ryzen-7-3700x-octa-core-3-6ghz-am4-desktop-processor/15331710"
 def check_avail():
 
     chrome_options = webdriver.ChromeOptions()
@@ -19,21 +22,37 @@ def check_avail():
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--disable-features=NetworkService")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36")
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-    # driver = webdriver.Chrome(executable_path="C:\\Users\\Josh\\Downloads\\chromedriver", options=chrome_options)
+    # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path="C:\\Users\\Josh\\Downloads\\chromedriver", options=chrome_options)
 
-    driver.get(walmart_test)
+    driver.get(amd_5950_bb)
 
     innerHTML = driver.execute_script("return document.body.innerHTML")
     # sleep(1)
     soup = BeautifulSoup(innerHTML, 'lxml')
     # print(soup)
     # tag = soup.body.select_one('class=cta')
-    tag = soup.find('button',{"data-automation":"cta-button"})
+    
+    tag = soup.find('span',{"class":"availabilityMessage_ig-s5 container_3LC03"})
+    print("***DEBUG***\n")
     print(tag)
-    if 'add to cart' in str(tag).lower():
+    print("\n***********")
+    if 'available to ship' in str(tag).lower():
+        print('IN STOCK')
+    else:
+        print("NOT IN STOCK")
+
+    driver.get(bb_good)
+    innerHTML = driver.execute_script("return document.body.innerHTML")
+    soup = BeautifulSoup(innerHTML, 'lxml')
+    tag = soup.find('span',{"class":"availabilityMessage_ig-s5 container_3LC03"})
+    print("***DEBUG***\n")
+    print(str(tag).lower())
+    print("\n***********")
+    if 'available to ship' in str(tag).lower():
         print('IN STOCK')
     else:
         print("NOT IN STOCK")
