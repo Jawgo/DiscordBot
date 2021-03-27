@@ -49,17 +49,7 @@ class Hunter():
         item = scraper.scrape_item
         item.update_status(result.found)
         if item.previously_in_stock ^ item.in_stock:
-            #TODO: This where we send an alert notification
-            if item.in_stock:
-                message = "In Stock!"
-                colour = "green"
-            else:
-                message = "Out of Stock!"
-                colour = "red"
-            name = item.item_name
-            url = item.url
-            # SEND ALERT, lets try a callback
-            self.send_alert(name, message, colour, url)
+            self.send_alert(item)
             
     def load_files(self):
         files = []

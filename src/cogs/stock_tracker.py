@@ -28,7 +28,7 @@ class StockTracker(commands.Cog):
             des = "Inventory Status of All items being hunted"
             embedVar = discord.Embed(title=title, description=des, colour=discord.Colour.orange())
             for scraper in tmp_scrapers:
-                item = scraper.item
+                item = scraper.scrape_item
                 name = "{} at {}".format(item.item.name,scraper.get_domain())
                 if item.in_stock:
                     msg = "**IN STOCK**"
