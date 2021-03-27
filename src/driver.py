@@ -23,11 +23,11 @@ class Driver():
         self.service = Service(self.driver_path)
         self.service.start()
 
-    async def get(self, url):
+    def get(self, url):
         # with webdriver.(executable_path=self.driver_path, chrome_options=self.options) as driver:
         with webdriver.Remote(self.service.service_url, desired_capabilities=self.options.to_capabilities()) as driver:
             driver.get(str(url))
-            innerHTML = await driver.execute_script("return document.body.innerHTML")
+            innerHTML = driver.execute_script("return document.body.innerHTML")
             driver.quit()
             return innerHTML
 
