@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-import datetime
+# import datetime
 
 from src.hunter import Hunter
 
@@ -26,7 +26,7 @@ class StockTracker(commands.Cog):
             tmp_scrapers = self.hunter.get_scrape_list()
             title = "Hunter Tracking Status"
             des = "Inventory Status of All items being hunted"
-            embedVar = discord.Embed(title=title, description=des, colour=discord.Colour.orange)
+            embedVar = discord.Embed(title=title, description=des, colour=discord.Colour.orange())
             for scraper in tmp_scrapers:
                 item = scraper.item
                 name = "{} at {}".format(item.item.name,scraper.get_domain())
@@ -44,13 +44,13 @@ class StockTracker(commands.Cog):
     async def start_tracking(self, ctx):
         await self.client.wait_until_ready()
         if not self.hunter:
-            embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green)
+            embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green())
             await ctx.channel.send(embed=embedVar)
             self.hunter = Hunter(self.alert)
             self.hunter.run()
         else:
-            embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue)
-            embedVar.timestamp = datetime.now()
+            embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue())
+            # embedVar.timestamp = datetime.now()
             await ctx.channel.send(embed=embedVar)
 
         
@@ -60,10 +60,10 @@ class StockTracker(commands.Cog):
         await self.client.wait_until_ready()
         if self.hunter:
             del self.hunter
-            embedVar = discord.Embed(title="Stock Hunter", description="Stoping the hunt for inventory", color=discord.Colour.red)
+            embedVar = discord.Embed(title="Stock Hunter", description="Stoping the hunt for inventory", color=discord.Colour.red())
         else:
-            embedVar = discord.Embed(title="Stock Hunter", description="Hunting has not been activated", color=discord.Colour.blue)
-        embedVar.timestamp = datetime.now()
+            embedVar = discord.Embed(title="Stock Hunter", description="Hunting has not been activated", color=discord.Colour.blue())
+        # embedVar.timestamp = datetime.now()
         await ctx.channel.send(embed=embedVar)
         
 
@@ -73,11 +73,11 @@ class StockTracker(commands.Cog):
         embedVar = discord.Embed(title="Stock Hunter")
         if item.in_stock:
             embedVar.description = "{} **IN STOCK** at {}".format(item.item_name, item.url)
-            embedVar.colour = discord.Colour.green
+            embedVar.colour = discord.Colour.green()
         else:
             embedVar.description = "{} **out of stock** at {}".format(item.item_name, item.url)
-            embedVar.colour = discord.Colour.red
-        embedVar.timestamp = datetime.now()
+            embedVar.colour = discord.Colour.red()
+        # embedVar.timestamp = datetime.now()
         await channel.send(embed=embedVar)
     
 
