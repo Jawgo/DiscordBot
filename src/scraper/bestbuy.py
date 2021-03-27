@@ -1,15 +1,15 @@
-from src.scraper.common import Scraper, ScrapeResult
+from src.scraper.common import Scraper, ScrapeResult, ScrapeFactory
 
 class BestBuyScrapeResult(ScrapeResult):
     def parse(self):
-        alert = False
-
         tag = self.soup.find('span',{"class":"availabilityMessage_ig-s5 container_3LC03"})
         if tag and 'available to ship' in str(tag).lower():
-            alert = True
+            self.found = True
+        else:
+            self.found = False
 
-        return alert
 
+@ScrapeFactory.register
 class BestBuyScraper(Scraper):
     @staticmethod
     def get_domain():

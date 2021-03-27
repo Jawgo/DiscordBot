@@ -1,40 +1,86 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
+import datetime
 
-from src.driver import Driver
-from src.scraper.bestbuy import BestBuyScraper
+from src.hunter import Hunter
+
 
 class StockTracker(commands.Cog):
     
     def __init__(self, client):
         self.client = client
-        self.driver = Driver()
-        # Hardcoding a link for now, will incorporate something to check multiple links
-        self.url = "https://www.bestbuy.ca/en-ca/product/amd-ryzen-9-5950x-16-core-3-4ghz-am4-desktop-processor/15331716"
-        self.bb = BestBuyScraper(self.driver, self.url)
-        self.in_stock = False
+        self.hunter = None
 
     @commands.Cog.listener()
     async def on_ready(self):
         print("Ready to track things")
 
-
+    #TODO: Finish with the this method. can do some cooler things with it
+    #Then do we need something to stop the scheduler? Maybe each time we
+    #sched something we keep track of it?
     @commands.command()
     async def list_trackers(self, ctx):
-        await ctx.send("Ryzen 9 5950x")
+        await self.client.wait_until_ready()
+        if self.hunter:
+            tmp_scrapers = self.hunter.get_scrape_list()
+            title = "Hunter Tracking Status"
+            des = "Inventory Status of All items being hunted"
+            embedVar = discord.Embed(title=title, description=des, colour=discord.Colour.orange)
+            for scraper in tmp_scrapers:
+                item = scraper.item
+                name = "{} at {}".format(item.item.name,scraper.get_domain())
+                if item.in_stock:
+                    msg = "**IN STOCK**"
+                else:
+                    msg = "out of stock"
+                embedVar.add_field(name=name, value=msg, inline=False)
+                # embedVar.timestamp = datetime.now()
+            await ctx.channel.send(embed=embedVar)
+        else:
+            await ctx.channel.send("The hunter is asleep")
 
-    @tasks.loop(seconds=60.0)
-    async def check_sites(self):
-        scrape_result = self.bb.scrape()
-        result = scrape_result.parse()
-        if result and not self.in_stock:
-            channel = self.client.get_channel(797324359051116556)
-            self.in_stock = True
-            await channel.send("In STOCK {}".format(scrape_result.url))
-        elif not result and self.in_stock:
-            await channel.send("Out of Stock {}".format(scrape_result.url))
+    @commands.command()
+    async def start_tracking(self):
+        await self.client.wait_until_ready()
+        channel = self.client.get_channel(797324359051116556)
+        if not self.hunter:
+            embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green)
+            await channel.send(embed=embedVar)
+            self.hunter = Hunter(self.alert)
+            self.hunter.run()
+        else:
+            embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue)
+            embedVar.timestamp = datetime.now()
+            await channel.send(embed=embedVar)
 
+        
+
+    @commands.command()
+    async def stop_tracking(self):
+        await self.client.wait_until_ready()
+        channel = self.client.get_channel(797324359051116556)
+        if self.hunter:
+            del self.hunter
+            embedVar = discord.Embed(title="Stock Hunter", description="Stoping the hunt for inventory", color=discord.Colour.red)
+        else:
+            embedVar = discord.Embed(title="Stock Hunter", description="Hunting has not been activated", color=discord.Colour.blue)
+        embedVar.timestamp = datetime.now()
+        await channel.send(embed=embedVar)
+        
+
+    async def alert(self, item):
+        await self.client.wait_until_ready()
+        channel = self.client.get_channel(797324359051116556)
+        embedVar = discord.Embed(title="Stock Hunter")
+        if item.in_stock:
+            embedVar.description = "{} **IN STOCK** at {}".format(item.item_name, item.url)
+            embedVar.colour = discord.Colour.green
+        else:
+            embedVar.description = "{} **out of stock** at {}".format(item.item_name, item.url)
+            embedVar.colour = discord.Colour.red
+        embedVar.timestamp = datetime.now()
+        await channel.send(embed=embedVar)
     
 
 

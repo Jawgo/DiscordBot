@@ -12,7 +12,7 @@ test_good = "https://www.tsc.ca/pages/productdetails?nav=R:646265&source=igodigi
 walmart_test = "https://www.walmart.ca/en/ip/playstation5-digital-edition/6000202198823"
 walmart_in_stock = "https://www.walmart.ca/en/ip/call-of-duty-black-ops-cold-war-ps5/6000201790899"
 
-amd_5950_bb = "https://www.bestbuy.ca/en-ca/product/amd-ryzen-9-5950x-16-core-3-4ghz-am4-desktop-processor/15331716"
+amd_5950_bb = "https://www.bestbuy.ca/en-ca/product/evga-geforce-rtx-3080-xc3-ultra-gaming-10gb-gddr6x-video-card/15084753"
 bb_good = "https://www.bestbuy.ca/en-ca/product/amd-ryzen-7-3700x-octa-core-3-6ghz-am4-desktop-processor/15331710"
 def check_avail():
 
@@ -35,7 +35,8 @@ def check_avail():
     soup = BeautifulSoup(innerHTML, 'lxml')
     # print(soup)
     # tag = soup.body.select_one('class=cta')
-    
+    print("sleeping")
+    sleep(30)
     tag = soup.find('span',{"class":"availabilityMessage_ig-s5 container_3LC03"})
     print("***DEBUG***\n")
     print(tag)
