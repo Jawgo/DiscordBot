@@ -41,32 +41,30 @@ class StockTracker(commands.Cog):
             await ctx.channel.send("The hunter is asleep")
 
     @commands.command()
-    async def start_tracking(self):
+    async def start_tracking(self, ctx):
         await self.client.wait_until_ready()
-        channel = self.client.get_channel(797324359051116556)
         if not self.hunter:
             embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green)
-            await channel.send(embed=embedVar)
+            await ctx.channel.send(embed=embedVar)
             self.hunter = Hunter(self.alert)
             self.hunter.run()
         else:
             embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue)
             embedVar.timestamp = datetime.now()
-            await channel.send(embed=embedVar)
+            await ctx.channel.send(embed=embedVar)
 
         
 
     @commands.command()
-    async def stop_tracking(self):
+    async def stop_tracking(self, ctx):
         await self.client.wait_until_ready()
-        channel = self.client.get_channel(797324359051116556)
         if self.hunter:
             del self.hunter
             embedVar = discord.Embed(title="Stock Hunter", description="Stoping the hunt for inventory", color=discord.Colour.red)
         else:
             embedVar = discord.Embed(title="Stock Hunter", description="Hunting has not been activated", color=discord.Colour.blue)
         embedVar.timestamp = datetime.now()
-        await channel.send(embed=embedVar)
+        await ctx.channel.send(embed=embedVar)
         
 
     async def alert(self, item):
