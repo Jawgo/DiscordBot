@@ -6,8 +6,8 @@ from selenium.webdriver.chrome.service import Service
 class Driver():
 
     def __init__(self):
-        # self.driver_path = os.environ.get("CHROMEDRIVER_PATH")
-        self.driver_path = "C:\\Users\\Josh\\Downloads\\chromedriver"
+        self.driver_path = os.environ.get("CHROMEDRIVER_PATH")
+        # self.driver_path = "C:\\Users\\Josh\\Downloads\\chromedriver"
         self.options = webdriver.ChromeOptions()
         self.options.add_argument("--headless")
         self.options.add_argument("--disable-dev-shm-usage")
