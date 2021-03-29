@@ -51,7 +51,7 @@ class StockTracker(commands.Cog):
             # self.alert.start()
             self.hunter = Hunter(self)
             self.thread = Thread(target=self.hunter.run())
-            await self.thread.start()
+            self.thread.start()
 
             # self.hunter.run()
         else:
