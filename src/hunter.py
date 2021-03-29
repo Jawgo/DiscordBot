@@ -46,6 +46,7 @@ class Hunter():
 
 
     def process_result(self, scraper, result):
+        print("Processing result for {}".format(scraper.scrape_item.item_name))
         item = scraper.scrape_item
         item.update_status(result.found)
         if item.previously_in_stock ^ item.in_stock:
@@ -73,6 +74,7 @@ class Hunter():
                     self.scrape_items.append(ScrapeItem(domain, url, file))
     
     def hunt(self, scraper):
+        print("Hunting")
         result = scraper.scrape()
         item = scraper.scrape_item.item_name
         url = scraper.scrape_item.url
