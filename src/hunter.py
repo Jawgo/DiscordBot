@@ -14,14 +14,14 @@ random.seed()
 
 class Hunter():
 
-    def __init__(self, _func = None):
+    # def __init__(self, _func = None):
+    def __init__(self, client):
         self.config_path = Path("./src/configs/")
         self.scrape_items = []
         self.files = self.load_files()
         self.driver = Driver()
         self.scrapers = None
-        self.send_alert = _func
-
+        self.client = client
         self.setup()
         self.scrapers = init_scrapers(self.driver, self.scrape_items)
 
@@ -49,7 +49,8 @@ class Hunter():
         item = scraper.scrape_item
         item.update_status(result.found)
         if item.previously_in_stock ^ item.in_stock:
-            self.send_alert(item)
+            pass
+            await self.client.send_alert(item)
             
     def load_files(self):
         files = []

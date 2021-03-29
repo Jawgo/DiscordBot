@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 # import datetime
+from threading import Thread
 
 from src.hunter import Hunter
 
@@ -11,6 +12,7 @@ class StockTracker(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.hunter = None
+        self.thread = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -46,8 +48,12 @@ class StockTracker(commands.Cog):
         if not self.hunter:
             embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green())
             await ctx.channel.send(embed=embedVar)
-            self.hunter = Hunter(self.alert)
-            self.hunter.run()
+            # self.alert.start()
+            self.hunter = Hunter(self.client)
+            self.thread = Thread(target=self.hunter.run())
+            self.thread.start()
+
+            # self.hunter.run()
         else:
             embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue())
             # embedVar.timestamp = datetime.now()
@@ -60,12 +66,29 @@ class StockTracker(commands.Cog):
         await self.client.wait_until_ready()
         if self.hunter:
             del self.hunter
+            del self.thread
+            # self.alert.stop()
             embedVar = discord.Embed(title="Stock Hunter", description="Stoping the hunt for inventory", color=discord.Colour.red())
         else:
             embedVar = discord.Embed(title="Stock Hunter", description="Hunting has not been activated", color=discord.Colour.blue())
         # embedVar.timestamp = datetime.now()
         await ctx.channel.send(embed=embedVar)
         
+
+    # @tasks.loop(seconds = 60)
+    # async def alert(self):
+
+    # TODO: What i am thinking is that we have a loop that will check for alerts
+    #       One option is that it is a task loop that will run, pass in a list that will
+    #       be populated with alerts and then based on the status, send an alert?
+    #       within the hunter, create a pool and run each one on a sep thread and join results
+
+
+    # TODO: Another option is that we spin off the process like stated above, but pass in the client and do an alert when
+        #   something is in stock? Try this first? wouldnt have to change much?
+    #
+    #
+    #
 
     async def alert(self, item):
         await self.client.wait_until_ready()
