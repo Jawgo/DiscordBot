@@ -50,7 +50,7 @@ class Hunter():
         item = scraper.scrape_item
         item.update_status(result.found)
         if item.previously_in_stock ^ item.in_stock:
-            self.client.send_alert(item)
+            self.client.alert(item)
             
     def load_files(self):
         files = []
