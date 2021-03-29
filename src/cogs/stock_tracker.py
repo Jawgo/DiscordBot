@@ -49,9 +49,9 @@ class StockTracker(commands.Cog):
             embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green())
             await ctx.channel.send(embed=embedVar)
             # self.alert.start()
-            self.hunter = Hunter(self.client)
+            self.hunter = Hunter(self)
             self.thread = Thread(target=self.hunter.run())
-            self.thread.start()
+            await self.thread.start()
 
             # self.hunter.run()
         else:
