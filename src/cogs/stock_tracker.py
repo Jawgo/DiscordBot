@@ -10,7 +10,6 @@ class StockTracker(commands.Cog):
     
     def __init__(self, client):
         self.client = client
-        self.hunter = Hunter()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -46,6 +45,7 @@ class StockTracker(commands.Cog):
         if not self.hunter:
             embedVar = discord.Embed(title="Stock Hunter", description="Starting to hunt for inventory", color=discord.Colour.green())
             await ctx.channel.send(embed=embedVar)
+            self.hunter = Hunter()
             self.alert.start()
         else:
             embedVar = discord.Embed(title="Stock Hunter", description="Already Running Dawg", color=discord.Colour.blue())
