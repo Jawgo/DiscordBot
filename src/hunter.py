@@ -8,21 +8,19 @@ import multiprocessing as mp
 from src.driver import Driver
 from src.scraper.common import ScrapeItem
 from src.scraper import init_scrapers
-from src.alerter import Alerter
+from src.alerter import send_alert
 
 REFRESH_INTERVAL = 2
 random.seed()
 
 class Hunter():
 
-    # def __init__(self, _func = None):
     def __init__(self):
         self.config_path = Path("./src/configs/")
         self.scrape_items = []
         self.files = self.load_files()
         self.driver = Driver()
         self.scrapers = None
-        self.alerter = Alerter()
         self.setup()
         self.scrapers = init_scrapers(self.driver, self.scrape_items)
 
@@ -51,7 +49,7 @@ class Hunter():
         try:
             processList = []
             for scraper in self.scrapers:
-                p = mp.Process(target=self.hunt, args=(scraper,))
+                p = mp.Process(target=self.hunt, args=(scraper, 200, ))
                 processList.append(p)
                 p.start()
 
@@ -75,9 +73,11 @@ class Hunter():
     def process_result(self, scraper, result):
         print("Processing result for {}".format(scraper.scrape_item.item_name))
         item = scraper.scrape_item
+        print("BEFORE Item Prev: {}, Item Now: {} for {} result is {}".format(item.previously_in_stock, item.in_stock, item.item_name, result.found))
         item.update_status(result.found)
+        print("AFTER Item Prev: {}, Item Now: {} for {} result is {}".format(item.previously_in_stock, item.in_stock, item.item_name, result.found))
         if item.previously_in_stock ^ item.in_stock:
-            self.alerter.send_alert(item)
+            send_alert(item)
             
     def load_files(self):
         files = []
@@ -100,15 +100,18 @@ class Hunter():
                 for url in data[domain]:
                     self.scrape_items.append(ScrapeItem(domain, url, file))
     
-    def hunt(self, scraper):
-        print("Hunting")
-        result = scraper.scrape()
-        item = scraper.scrape_item.item_name
-        url = scraper.scrape_item.url
-        if result is None:
-            print("Something went wrong with {} for {}".format(url, item))
-        else:
-            self.process_result(scraper, result)
+    def hunt(self, scraper, num):
+        i =  num
+        while i > 0:
+            print("Hunting")
+            result = scraper.scrape()
+            item = scraper.scrape_item.item_name
+            url = scraper.scrape_item.url
+            if result is None:
+                print("Something went wrong with {} for {}".format(url, item))
+            else:
+                self.process_result(scraper, result)
+            i -= 1
         
 
     def get_scrape_list(self):

@@ -6,4 +6,4 @@ WORKDIR /usr/src/src
 RUN python3 setup.py install
 
 # Launch app
-CMD ["python3", "src/josh_bot.py"]
+CMD ["python3", "src/test.py"]

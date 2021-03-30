@@ -16,6 +16,6 @@ if __name__ == '__main__':
     print("Starting things up")
     intents = discord.Intents.default()
     client = DiscordBot(command_prefix="!", intents=intents)
-    client.load_extension('cogs.stock_tracker')
+    # client.load_extension('cogs.stock_tracker')
     client.load_extension('cogs.basic_commands')
     client.run(os.environ["TOKEN"])
