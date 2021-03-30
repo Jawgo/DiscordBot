@@ -3,11 +3,12 @@ import os
 import sched
 from pathlib import Path, PurePosixPath
 import random
-
+import multiprocessing as mp
 
 from src.driver import Driver
 from src.scraper.common import ScrapeItem
 from src.scraper import init_scrapers
+from src.alerter import Alerter
 
 REFRESH_INTERVAL = 2
 random.seed()
@@ -15,34 +16,60 @@ random.seed()
 class Hunter():
 
     # def __init__(self, _func = None):
-    def __init__(self, client):
+    def __init__(self):
         self.config_path = Path("./src/configs/")
         self.scrape_items = []
         self.files = self.load_files()
         self.driver = Driver()
         self.scrapers = None
-        self.client = client
+        self.alerter = Alerter()
         self.setup()
         self.scrapers = init_scrapers(self.driver, self.scrape_items)
 
-        self.scheduler = sched.scheduler()
-        for s in self.scrapers:
-            self.schedule(s)
+        # self.scheduler = sched.scheduler()
+        # for s in self.scrapers:
+    #         self.schedule(s)
         
+    # def run(self):
+    #     self.scheduler.run(blocking=True)
+
+    # def schedule(self, scraper):
+    #     time_delta = REFRESH_INTERVAL
+    #     time_delta *= random.randint(100,120) / 100.0
+
+    #     if self.scheduler.queue:
+    #         # This is taking the time scheduled and adding a delta to
+    #         # it to create randomness 
+    #         t = self.scheduler.queue[-1].time + time_delta
+    #         self.scheduler.enterabs(t, 1, Hunter.hunt, (self, scraper))
+    #     else:
+    #         self.scheduler.enter(time_delta, 1, Hunter.hunt, (self, scraper))
+
+    # New way to search for stock, uses a process for each scraper and finds all at once, if something is found, will
+    # send an alert through web hook. Could make this endless, and just get the bot to stop, or make it a background task
     def run(self):
-        self.scheduler.run(blocking=True)
+        try:
+            processList = []
+            for scraper in self.scrapers:
+                p = mp.Process(target=self.hunt, args=(scraper,))
+                processList.append(p)
+                p.start()
 
-    def schedule(self, scraper):
-        time_delta = REFRESH_INTERVAL
-        time_delta *= random.randint(100,120) / 100.0
+            processFailed = False
+            for p in processList:
+                p.join()
+                if p.exitcode is not 0:
+                    processFailed = True
 
-        if self.scheduler.queue:
-            # This is taking the time scheduled and adding a delta to
-            # it to create randomness 
-            t = self.scheduler.queue[-1].time + time_delta
-            self.scheduler.enterabs(t, 1, Hunter.hunt, (self, scraper))
-        else:
-            self.scheduler.enter(time_delta, 1, Hunter.hunt, (self, scraper))
+            for p in processList:
+                if p.is_alive():
+                    print("Process was found to still be alive!")
+
+            if processFailed:
+                print("A process failed, but no exception was raised??")
+    
+        except Exception as e:
+            print("Exception is {}".format(e))
 
 
     def process_result(self, scraper, result):
@@ -50,7 +77,7 @@ class Hunter():
         item = scraper.scrape_item
         item.update_status(result.found)
         if item.previously_in_stock ^ item.in_stock:
-            self.client.alert(item)
+            self.alerter.send_alert(item)
             
     def load_files(self):
         files = []
@@ -83,10 +110,13 @@ class Hunter():
         else:
             self.process_result(scraper, result)
         
-        # return self.schedule(scraper)
 
     def get_scrape_list(self):
         return self.scrapers
+
+if __name__ == "__main__":
+    h = Hunter()
+    h.run()
                 
 
                 
