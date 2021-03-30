@@ -1,1 +1,1 @@
-worker: python3 src/test.py
+worker: python3 src/josh_bot.py
