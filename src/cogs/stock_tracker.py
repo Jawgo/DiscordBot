@@ -10,6 +10,7 @@ class StockTracker(commands.Cog):
     
     def __init__(self, client):
         self.client = client
+        self.hunter = None
 
     @commands.Cog.listener()
     async def on_ready(self):
